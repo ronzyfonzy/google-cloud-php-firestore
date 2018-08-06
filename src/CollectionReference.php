@@ -175,11 +175,18 @@ class CollectionReference extends Query
      * $newUser = $collection->newDocument();
      * ```
      *
+     * @param null $documentName
      * @return DocumentReference
      */
-    public function newDocument()
+    public function newDocument($documentName = null)
     {
-        return $this->documentFactory($this->randomName($this->name));
+        if (is_null($documentName)) {
+            $name = $this->randomName($this->name);
+        } else {
+            $name = "{$this->name}/$documentName";
+        }
+
+        return $this->documentFactory($name);
     }
 
     /**
@@ -200,11 +207,16 @@ class CollectionReference extends Query
      * @param array $fields An array containing field names paired with their value.
      *        Accepts a nested array, or a simple array of field paths.
      * @param array $options Configuration Options.
+     * @param string $documentName The document to create.
      * @return DocumentReference
      */
-    public function add(array $fields = [], array $options = [])
+    public function add(array $fields = [], array $options = [], $documentName = null)
     {
-        $name = $this->randomName($this->name);
+        if (is_null($documentName)) {
+            $name = $this->randomName($this->name);
+        } else {
+            $name = "{$this->name}/$documentName";
+        }
 
         $document = $this->documentFactory($name);
         $result = $document->create($fields, $options);
